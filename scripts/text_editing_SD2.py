@@ -44,6 +44,7 @@ class BlendedLatnetDiffusion:
             default="outputs/res.jpg",
             help="The destination output path",
         )
+        parser.add_argument("--inversion", nargs="+", type=str, default=None, help="The paths to textual inversion images")
 
         self.args = parser.parse_args()
 
@@ -51,6 +52,11 @@ class BlendedLatnetDiffusion:
         pipe = StableDiffusionPipeline.from_pretrained(
             self.args.model_path, torch_dtype=torch.float16
         )
+        # load textual inversion
+        if self.args.inversion is not None:
+            for inversion_path in self.args.inversion:
+                pipe.load_textual_inversion(inversion_path)
+
         self.vae = pipe.vae.to(self.args.device)
         self.tokenizer = pipe.tokenizer
         self.text_encoder = pipe.text_encoder.to(self.args.device)
