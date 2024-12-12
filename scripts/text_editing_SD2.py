@@ -1,4 +1,4 @@
-import argparse
+import argparse, os
 import numpy as np
 from PIL import Image
 
@@ -47,6 +47,9 @@ class BlendedLatnetDiffusion:
         parser.add_argument("--inversion", nargs="+", type=str, default=None, help="The paths to textual inversion images")
 
         self.args = parser.parse_args()
+
+        # make output directory
+        os.makedirs(os.path.dirname(self.args.output_path), exist_ok=True)
 
     def load_models(self):
         pipe = StableDiffusionPipeline.from_pretrained(
